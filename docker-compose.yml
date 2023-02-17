@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+
+  nginx_ubuntu:
+    hostname: nginx
+    container_name: nginx
+    build:
+        context: .
+        dockerfile: ./Dockerfile
+    stdin_open: true
+    tty: true
+    ports:
+      - 80:80
