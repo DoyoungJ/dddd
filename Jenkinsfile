@@ -60,7 +60,7 @@ pipeline {
             // Docker plugin and Docker Pipeline 두개를 깔아야 사용가능!
             agent {
               docker {
-                image 'node:latest'
+                image 'nginx:latest'
               }
             } 
             
@@ -77,7 +77,7 @@ pipeline {
         stage('Test Backend') {
           agent {
             docker {
-              image 'node:latest'
+              image 'nginx:latest'
             }
           }
           steps {
