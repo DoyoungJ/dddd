@@ -42,19 +42,7 @@ pipeline {
                 }
             }
         }
-        
-        // aws s3 에 파일을 올림
-        stage('Deploy Frontend') {
-          steps {
-            echo 'Deploying Frontend'
-            // 프론트엔드 디렉토리의 정적파일들을 S3 에 올림, 이 전에 반드시 EC2 instance profile 을 등록해야함.
-            dir ('./website'){
-                sh '''
-                aws s3 sync ./ s3://dyj-s3-oregon
-                '''
-            }
-          }
-        }
+      
         
         stage('Lint Backend') {
             // Docker plugin and Docker Pipeline 두개를 깔아야 사용가능!
@@ -63,15 +51,7 @@ pipeline {
                 image 'nginx:latest'
               }
             } 
-            
-            steps {
-              dir ('./server'){
-                  sh '''
-                  npm install&&
-                  npm run lint
-                  '''
-              }
-            }
+      
         }
         
         stage('Test Backend') {
@@ -92,26 +72,7 @@ pipeline {
           }
         }
         
-        stage('Bulid Backend') {
-          agent any
-          steps {
-            echo 'Build Backend'
-
-            dir ('./server'){
-                sh """
-                docker build . -t server
-                """
-            }
-          }
-
-          post {
-            failure {
-              error 'This pipeline stops here...'
-            }
-          }
-        }
-        
-        stage('Deploy Backend') {
+        stage('Deploy') {
           agent any
 
           steps {
@@ -119,7 +80,7 @@ pipeline {
 
             dir ('./server'){
                 sh '''
-                docker run -p 80:80 -d server
+                docker run -it --name nginx_webserver -d -p 80:80 nginx
                 '''
             }
           }
