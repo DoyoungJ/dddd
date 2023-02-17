@@ -54,27 +54,6 @@ pipeline {
                 '''
             }
           }
-
-          post {
-              // If Maven was able to run the tests, even if some of the test
-              // failed, record the test results and archive the jar file.
-              success {
-                  echo 'Successfully Cloned Repository'
-
-                  mail  to: 'dy.jung@smileshark.kr',
-                        subject: "Deploy Frontend Success",
-                        body: "Successfully deployed frontend!"
-
-              }
-
-              failure {
-                  echo 'I failed :('
-
-                  mail  to: 'dy.jung@smileshark.kr',
-                        subject: "Failed Pipelinee",
-                        body: "Something is wrong with deploy frontend"
-              }
-          }
         }
         
         stage('Lint Backend') {
@@ -142,15 +121,6 @@ pipeline {
                 sh '''
                 docker run -p 80:80 -d server
                 '''
-            }
-          }
-
-          post {
-            success {
-              mail  to: 'dy.jung@smileshark.kr',
-                    subject: "Deploy Success",
-                    body: "Successfully deployed!"
-                  
             }
           }
         }
